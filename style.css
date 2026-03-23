@@ -1,0 +1,726 @@
+/* ═══════════════════════════════════════════════════════
+   GALLO BUFFET — Estilos principais
+   Paleta : #6e1407 · #b03900 · #a82e00 · #a3642a · #fff
+   Fontes : Maharlika · Arapey · DM Sans
+═════════════════════════════════════════════════════════ */
+
+
+/* ══════════════════════════════════════════════════════
+   BASE
+══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #fff;
+  color: #6e1407;
+  overflow-x: hidden;
+}
+
+/* Helpers de tipografia */
+.font-display  { font-family: 'Maharlika', serif; }
+.font-subtitle { font-family: 'Arapey', serif; }
+.font-body     { font-family: 'DM Sans', sans-serif; }
+
+/* Divisores decorativos */
+.wave-divider     { display: block; line-height: 0; }
+.wave-divider svg { display: block; width: 100%; }
+
+
+/* ══════════════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════════════ */
+#topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+#topnav.scrolled {
+  background: rgba(110, 20, 7, 0.96);
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+
+/* ══════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════ */
+#hero {
+  position: relative;
+  height: 80vh;
+  min-height: 520px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: Center;
+  z-index: 1;
+}
+
+/* Fallback animado quando não há vídeo */
+#hero-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 30% 60%, #a3642a 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 30%, #a82e00 0%, transparent 50%),
+    linear-gradient(160deg, #6e1407 0%, #b03900 60%, #a82e00 100%);
+  background-size: cover;
+}
+
+/* Bolhas bokeh do fallback */
+.bokeh {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  animation: float 8s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1);       opacity: .6; }
+  50%       { transform: translateY(-30px) scale(1.1); opacity: .9; }
+}
+
+/* Overlay de gradiente — fica acima do vídeo/fallback */
+#hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(110, 20, 7, 0.55) 0%,
+    rgba(110, 20, 7, 0.35) 50%,
+    rgba(110, 20, 7, 0.70) 100%
+  );
+}
+
+/* Conteúdo central — acima de tudo */
+#hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 1.5rem;
+  animation: heroReveal 1.2s ease both;
+}
+@keyframes heroReveal {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Ornamento de linha com texto central */
+.ornament-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ornament-line::before,
+.ornament-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.3;
+}
+
+/* Ornamento horizontal decorativo */
+.hero-ornament {
+  display: inline-block;
+  width: 60px;
+  height: 2px;
+  background: #a3642a;
+  vertical-align: middle;
+  margin: 0 12px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   CARROSSÉIS PEEK
+══════════════════════════════════════════════════════ */
+
+/* Wrapper relativo — contém viewport + botões nav */
+.peek-wrap {
+  position: relative;
+  margin: 0 -1rem; /* sangra até as bordas do padding do pai */
+  padding: 0.5rem 0 0.25rem;
+  /* Isola repaints dos carrosséis do resto da página */
+  contain: layout style;
+}
+
+/* Viewport com overflow oculto — cria o efeito peek */
+.peek-viewport {
+  overflow: hidden;
+  width: 100%;
+  /* Promove a uma camada GPU para que o scroll não cause repaint */
+  transform: translateZ(0);
+}
+
+/* Track deslizante */
+.peek-track {
+  display: flex;
+  will-change: transform;
+  transition: transform 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Cada card */
+.carousel-card {
+  flex: 0 0 52%;
+  padding: 0 8px;
+  cursor: pointer;
+}
+@media (min-width: 640px)  { .carousel-card { flex: 0 0 42%; } }
+@media (min-width: 1024px) { .carousel-card { flex: 0 0 32%; } }
+
+/* Inner — formato vertical 2:3 (retrato/portrait) */
+.carousel-card-inner {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(110, 20, 7, 0.18);
+  transition: box-shadow 0.4s ease;
+  background: #1a0a05;
+  /* Promove a camada própria — evita repaint ao animar o overlay */
+  transform: translateZ(0);
+}
+
+/* Card ativo — sombra mais pronunciada */
+.carousel-card.active .carousel-card-inner {
+  box-shadow: 0 16px 44px rgba(110, 20, 7, 0.32);
+}
+
+/* ── Overlay de escurecimento nas cards laterais ──────────
+ * Usa opacity em vez de filter: brightness().
+ * Opacity é animada pelo compositor GPU (zero repaint/layout).
+ * ─────────────────────────────────────────────────────── */
+.carousel-card-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 4; /* acima da imagem, overlay e label */
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+/* Remove o overlay quando o card está ativo */
+.carousel-card.active .carousel-card-inner::after {
+  opacity: 0;
+}
+
+/* Imagem real do card */
+.carousel-card-inner img.card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Placeholder visível enquanto não há foto */
+.card-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 0;
+  padding: 1rem;
+  text-align: center;
+}
+.card-placeholder svg    { opacity: 0.4; flex-shrink: 0; }
+.card-placeholder .ph-path {
+  font-family: 'DM Sans', monospace;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.55);
+  word-break: break-all;
+  line-height: 1.4;
+  margin-top: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.card-placeholder .ph-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.5px;
+}
+
+.carousel-card-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.carousel-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(110, 20, 7, 0.88) 0%,
+    rgba(110, 20, 7, 0.08) 65%
+  );
+}
+
+.carousel-card-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1rem 1rem 0.85rem;
+  z-index: 2;
+}
+
+/* Hint "ampliar" no hover do card ativo */
+.peek-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(110, 20, 7, 0.42);
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 3;
+}
+.carousel-card.active .carousel-card-inner:hover .peek-hint { opacity: 1; }
+.peek-hint span {
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Botões nav prev / next */
+.peek-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.18);
+  color: #6e1407;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+.peek-nav:hover {
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.26);
+  transform: translateY(-50%) scale(1.09);
+}
+.peek-nav:disabled { opacity: 0.3; cursor: default; transform: translateY(-50%); }
+.peek-nav.peek-prev { left: 6px; }
+.peek-nav.peek-next { right: 6px; }
+
+/* Dots indicadores */
+.peek-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 1.1rem;
+}
+.peek-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4b8a8;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, width 0.3s, border-radius 0.3s;
+}
+.peek-dot.active {
+  background: #a3642a;
+  width: 22px;
+  border-radius: 4px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   MODAL / LIGHTBOX
+══════════════════════════════════════════════════════ */
+.peek-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+  padding: 0;
+}
+.peek-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Caixa ocupa quase toda a tela */
+.peek-modal-box {
+  position: relative;
+  width: 100vw;
+  height: 100dvh; /* dynamic viewport height — evita barra do browser mobile */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: scale(0.97);
+  transition: transform 0.36s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.peek-modal-overlay.open .peek-modal-box {
+  transform: scale(1);
+}
+
+/* Botão fechar — canto superior direito da tela */
+.peek-modal-close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s, border-color 0.2s, transform 0.25s;
+}
+.peek-modal-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+  transform: rotate(90deg);
+}
+
+/* Viewport + track do modal */
+.peek-modal-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  /* Altura: viewport menos espaço para o rodapé e botão fechar */
+  height: calc(100dvh - 80px);
+}
+.peek-modal-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+  transition: transform 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Card do modal — ativo ocupa ~80% da largura */
+.peek-modal-card {
+  flex: 0 0 82%;
+  padding: 0 6px;
+  height: 100%;
+}
+@media (min-width: 640px)  { .peek-modal-card { flex: 0 0 72%; } }
+@media (min-width: 1024px) { .peek-modal-card { flex: 0 0 60%; padding: 0 10px; } }
+
+/* Inner — ocupa toda a altura disponível */
+.peek-modal-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #1a0a05;
+  transform: translateZ(0);
+}
+
+/* Overlay de escurecimento nos cards laterais do modal */
+.peek-modal-card-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 4;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.peek-modal-card.active .peek-modal-card-inner::after {
+  opacity: 0;
+}
+
+/* Imagem dentro do modal — cobre o inner sem distorcer */
+.peek-modal-card-inner img.card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* contain para não cortar resolução alta */
+  object-position: center;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+.peek-modal-card-inner .carousel-card-bg      { position: absolute; inset: 0; }
+.peek-modal-card-inner .carousel-card-overlay { position: absolute; inset: 0; }
+.peek-modal-card-inner .carousel-card-label   {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 1rem 1rem 0.85rem;
+  z-index: 2;
+}
+
+/* Botões nav do modal — centrados verticalmente na viewport */
+.peek-modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.peek-modal-nav:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+.peek-modal-nav.peek-modal-prev { left: 10px; }
+.peek-modal-nav.peek-modal-next { right: 10px; }
+
+/* Rodapé — legenda e contador */
+.peek-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 48px;
+  padding: 0 1rem;
+  flex-shrink: 0;
+}
+.peek-modal-caption {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Arapey', serif;
+  font-style: italic;
+  font-size: 1rem;
+}
+.peek-modal-counter {
+  color: rgba(255, 255, 255, 0.45);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   DEPOIMENTOS
+══════════════════════════════════════════════════════ */
+.star-row {
+  color: #a3642a;
+  letter-spacing: 2px;
+}
+
+
+/* ══════════════════════════════════════════════════════
+   FAQ ACCORDION
+══════════════════════════════════════════════════════ */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.faq-answer.open { max-height: 300px; }
+
+.faq-icon { transition: transform 0.3s ease; }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+
+
+/* ══════════════════════════════════════════════════════
+   SCROLL REVEAL
+   Conteúdo sempre visível; animação é aprimoramento visual
+══════════════════════════════════════════════════════ */
+.reveal { opacity: 1; transform: none; }
+
+.reveal.animate-in { animation: revealUp 0.7s ease both; }
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+.reveal-delay-1.animate-in { animation-delay: 0.1s; }
+.reveal-delay-2.animate-in { animation-delay: 0.2s; }
+.reveal-delay-3.animate-in { animation-delay: 0.3s; }
+.reveal-delay-4.animate-in { animation-delay: 0.4s; }
+
+
+/* ══════════════════════════════════════════════════════
+   COMPONENTES GLOBAIS
+══════════════════════════════════════════════════════ */
+
+/* Botão WhatsApp com pulso */
+.btn-whatsapp {
+  animation: pulse-wa 2.5s ease-in-out infinite;
+}
+@keyframes pulse-wa {
+  0%, 100% { box-shadow: 0 0 0 0    rgba(163, 100, 42, 0.5); }
+  50%       { box-shadow: 0 0 0 14px rgba(163, 100, 42, 0);   }
+}
+
+/* Indicador ping do botão flutuante WhatsApp */
+@keyframes ping-dot {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* Ícone de loading (spinner) */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+#spin-icon { animation: spin 1s linear infinite; }
+
+
+/* ══════════════════════════════════════════════════════
+   SECÇÃO — PROBLEMA (02)
+══════════════════════════════════════════════════════ */
+.section-problema {
+  background: #1a0a05;
+  padding: 5rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.section-problema::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(110,20,7,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 80%, rgba(163,100,42,0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+.problema-quote {
+  font-family: 'Arapey', serif;
+  font-style: italic;
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  color: #f5ede8;
+  line-height: 1.7;
+  border-left: 3px solid #a3642a;
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+}
+
+/* ══════════════════════════════════════════════════════
+   SECÇÃO — AUTORIDADE (06)
+══════════════════════════════════════════════════════ */
+.section-autoridade {
+  background: linear-gradient(160deg, #0d0503 0%, #1a0a05 50%, #2a1008 100%);
+  padding: 5rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.section-autoridade::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(163,100,42,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+.unidade-card {
+  border: 1px solid rgba(163,100,42,0.25);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  transition: border-color 0.3s, background 0.3s;
+}
+.unidade-card:hover {
+  border-color: rgba(163,100,42,0.55);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ══════════════════════════════════════════════════════
+   SELOS DE CONFIANÇA
+══════════════════════════════════════════════════════ */
+.selos-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+.selo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(163,100,42,0.3);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  background: rgba(163,100,42,0.07);
+}
+.selo-icon { font-size: 1.3rem; flex-shrink: 0; }
+.selo-text { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: #6e1407; line-height: 1.3; }
+.selo-text strong { display: block; font-size: 0.95rem; color: #a3642a; }
+
+/* ══════════════════════════════════════════════════════
+   BENEFÍCIOS — lista estilizada
+══════════════════════════════════════════════════════ */
+.benefit-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(110,20,7,0.08);
+}
+.benefit-item:last-child { border-bottom: none; }
+.benefit-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a82e00, #a3642a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+.benefit-title {
+  font-family: 'Maharlika', serif;
+  font-size: 1rem;
+  color: #6e1407;
+  margin-bottom: 0.25rem;
+}
+.benefit-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #b03900;
+  line-height: 1.55;
+}
